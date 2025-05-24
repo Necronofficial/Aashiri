@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For Aashi</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .content {
+      position: absolute;
+      top: 10%;
+      left: 5%;
+      z-index: 2;
+      color: white;
+      font-size: 1.6rem;
+      font-weight: bold;
+      max-width: 90%;
+      line-height: 2.5rem;
+    }
+
+    .line {
+      display: block;
+      margin-bottom: 15px;
+      white-space: pre-wrap;
+    }
+
+    .neon {
+      text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 20px #f0f;
+    }
+  </style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="content" id="textContainer"></div>
+<audio autoplay loop>
+  <source src="jhol.mp3" type="audio/mp3" />
+  Your browser does not support the audio tag.
+</audio>
+
+<script>
+  // STAR CANVAS
+  const canvas = document.getElementById("stars");
+  const ctx = canvas.getContext("2d");
+  let width, height;
+  let stars = [];
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  function createStars(count) {
+    stars = [];
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.2 + 0.5,
+        speed: Math.random() * 0.3 + 0.05,
+        hue: Math.random() * 360
+      });
+    }
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, width, height);
+    stars.forEach((star) => {
+      star.y += star.speed;
+      if (star.y > height) star.y = 0;
+      star.hue += 1;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `hsl(${star.hue}, 100%, 70%)`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  window.addEventListener("resize", () => {
+    resize();
+    createStars(5000);
+  });
+
+  resize();
+  createStars(5000);
+  drawStars();
+
+  // TEXT ANIMATION
+  const lines = [
+    "Dear Aashi,",
+    "Kya tumhe pata hai...",
+    "Jab tum muskurati ho, to lagta hai duniya ruk jati hai.",
+    "Tere bina sab kuch adhura lagta hai.",
+    "Tum meri zindagi ka wo hissa ho, jo kabhi khatam nahi ho sakta.",
+    "Bas itna kehna tha...",
+    "I love you, endlessly.",
+    "Tum ho to sab kuch hai... tum nahi to kuch bhi nahi.",
+    "Forever yours,",
+    "— Tumhara jaan"
+  ];
+
+  let container = document.getElementById("textContainer");
+  let lineIndex = 0;
+
+  function typeLine(line, callback) {
+    let span = document.createElement("span");
+    span.classList.add("line", "neon");
+    container.appendChild(span);
+
+    let charIndex = 0;
+    function typeChar() {
+      if (charIndex < line.length) {
+        span.textContent += line[charIndex++];
+        setTimeout(typeChar, 50);
+      } else {
+        setTimeout(callback, 800);
+      }
+    }
+    typeChar();
+  }
+
+  function showLines() {
+    if (lineIndex < lines.length) {
+      typeLine(lines[lineIndex++], showLines);
+    }
+  }
+
+  showLines();
+</script>
+</body>
+</html>
